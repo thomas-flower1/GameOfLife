@@ -15,7 +15,7 @@ and run using:
 <br>
 ```./a.out```
 
-Once compiled just press draw using the mouse and press enter to start.
+Once compiled just draw using the mouse and press enter to start.
 
 
 ## Demo
