@@ -13,91 +13,98 @@ void print_matrix(const std::vector<std::vector<int>>& matrix){
     }
 }
 
-void underpopulation(std::vector<std::vector<int>>& grid, int row, int col, std::vector<sf::Vector2i>& cells_to_kill) {
-    /*
-    Checks the 8 square neighbors
 
-    Dies if has fewer than 2 live neighbors
+void rules(std::vector<std::vector<int>>& grid, int row, int col, std::vector<sf::Vector2i>& cells_to_kill, std::vector<sf::Vector2i>& cells_to_revive) {
 
-    Given the row and column (the position of the cell) checks its neighbors and sees if it dies by overpopulation
 
-    
-    */
-
-    // if the cell is dead just return straight away
-    if(grid[row][col] == 0) {
-        return;
-    }
-
-    int number_of_live_neighbors{0};
+    int number_of_neighbors{0};
     int row_size{static_cast<int>(grid[0].size())};
     int col_size{static_cast<int>(grid.size())};
 
-    int check_y{row-1};
 
+    for(int current_row{row-1}; current_row < row+2; current_row++) {
 
-    for (int i = 0; i < 3; i++){
-        int check_x{col-1};
-        for(int j = 0; j < 3; j++) {
+        for(int current_col{col-1}; current_col < col+2; current_col++) {
+            // need to check that the col and row are positive, need to check they are not greater than the array size
+            if(current_row >= 0 && current_col >= 0 && current_row < row_size && current_col < col_size) {
 
+                // check if we are checking the original cell, i.e the cell that we are givent the row and coord of
+                if(current_col == col && current_row == row){
 
-            // check if its the square we are checking
-            if(check_x == col && check_y == row) {
-                check_x ++;
-                continue;
-            }
-
-            // check if the x coord is positive and not out of bounds
-            else if((check_x >= 0) && (check_y >= 0) && (check_x < row_size) && (check_y < col_size)){
-                int current_neighbor{grid[check_y][check_x]};
-                if (current_neighbor == 1){
-                    number_of_live_neighbors ++;
+                    // then just continue
+                    continue;
+                } else if (grid[current_row][current_col] == 1) {
+                    number_of_neighbors++;
                 }
-
             }
-            check_x ++;
         }
-        check_y ++;
-        
     }
 
-    if(number_of_live_neighbors < 2) {
 
-        // need to change this instead, create a class to keep track of all the things I need to kill
-        sf::Vector2i coord{row, col};
-        cells_to_kill.push_back(coord);
+
+    sf::Vector2i cell{row, col};
+
+    // check for underpopulation, overpopulation and reproduction
+    if(number_of_neighbors == 3) {
+        cells_to_revive.push_back(cell);
+    }
+
+    
+    else if(number_of_neighbors < 2 || number_of_neighbors > 3){
+        cells_to_kill.push_back(cell);
+
+    }
+}
+
+void kill(std::vector<std::vector<int>>& grid, std::vector<sf::Vector2i>& cells_to_kill) {
+    for(sf::Vector2i coord: cells_to_kill) {
+        int row{coord.x};
+        int col{coord.y};
+        grid[row][col] = 0;
+
+
+    }
+}
+
+void revive(std::vector<std::vector<int>>& grid, std::vector<sf::Vector2i>& cells_to_revive) {
+    for(sf::Vector2i coord: cells_to_revive) {
+        int row{coord.x};
+        int col{coord.y};
+        grid[row][col] = 1;
+
 
     }
 }
 
 
+
+
 int main() {
 
     std::vector<sf::Vector2i> cells_to_kill{};
+    std::vector<sf::Vector2i> cells_to_revive{};
 
     std::vector<std::vector<int>> grid{
-        {0, 0, 1},
-        {0, 1, 0},
-        {0, 1, 0}
+        {0, 0, 0},
+        {1, 1, 1},
+        {0, 0, 0}
     };
+
+
 
     for(int row = 0; row < 3; row++) {
         for(int col = 0; col < 3; col++) {
-            underpopulation(grid, row, col, cells_to_kill);
+            rules(grid, row, col, cells_to_kill, cells_to_revive);
 
         }
     }
 
-
- 
-
-    for(auto value: cells_to_kill) {
-        std::cout << value.x << "\n";
-        std::cout << value.y << "\n";
-    }
+   
 
 
-
+    kill(grid, cells_to_kill);
+    revive(grid, cells_to_revive);
+    print_matrix(grid);
 
 
     return 0;
