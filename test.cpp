@@ -18,15 +18,15 @@ void rules(std::vector<std::vector<int>>& grid, int row, int col, std::vector<sf
 
 
     int number_of_neighbors{0};
-    int row_size{static_cast<int>(grid[0].size())};
-    int col_size{static_cast<int>(grid.size())};
+    int number_of_rows{static_cast<int>(grid.size())};
+    int number_of_cols{static_cast<int>(grid[0].size())};
 
 
     for(int current_row{row-1}; current_row < row+2; current_row++) {
 
         for(int current_col{col-1}; current_col < col+2; current_col++) {
             // need to check that the col and row are positive, need to check they are not greater than the array size
-            if(current_row >= 0 && current_col >= 0 && current_row < row_size && current_col < col_size) {
+            if(current_row >= 0 && current_col >= 0 && current_row < number_of_rows && current_col < number_of_cols) {
 
                 // check if we are checking the original cell, i.e the cell that we are givent the row and coord of
                 if(current_col == col && current_row == row){
@@ -85,21 +85,29 @@ int main() {
     std::vector<sf::Vector2i> cells_to_revive{};
 
     std::vector<std::vector<int>> grid{
-        {0, 0, 0},
-        {1, 1, 1},
-        {0, 0, 0}
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0},
+        {0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0},
+        {0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0},
+        {0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        {1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0},
+        {0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1}
     };
 
+    int number_of_rows{static_cast<int>(grid.size())};
+    int number_of_cols{static_cast<int>(grid[0].size())};
 
-
-    for(int row = 0; row < 3; row++) {
-        for(int col = 0; col < 3; col++) {
-            rules(grid, row, col, cells_to_kill, cells_to_revive);
-
+    for(int i = 0; i < number_of_rows; i++) {
+        for(int j = 0; j < number_of_cols; j++) {
+            rules(grid, i, j, cells_to_kill, cells_to_revive);
         }
-    }
 
-   
+    }
 
 
     kill(grid, cells_to_kill);

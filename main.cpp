@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
+#include <thread>
+#include <mutex>
 
 
 void print_matrix(const std::vector<std::vector<int>>& matrix){
@@ -17,15 +19,15 @@ void rules(std::vector<std::vector<int>>& grid, int row, int col, std::vector<sf
 
 
     int number_of_neighbors{0};
-    int row_size{static_cast<int>(grid[0].size())};
-    int col_size{static_cast<int>(grid.size())};
+    int number_of_rows{static_cast<int>(grid.size())};
+    int number_of_cols{static_cast<int>(grid[0].size())};
 
 
     for(int current_row{row-1}; current_row < row+2; current_row++) {
 
         for(int current_col{col-1}; current_col < col+2; current_col++) {
             // need to check that the col and row are positive, need to check they are not greater than the array size
-            if(current_row >= 0 && current_col >= 0 && current_row < row_size && current_col < col_size) {
+            if(current_row >= 0 && current_col >= 0 && current_row < number_of_rows && current_col < number_of_cols) {
 
                 // check if we are checking the original cell, i.e the cell that we are givent the row and coord of
                 if(current_col == col && current_row == row){
@@ -63,6 +65,8 @@ void kill(std::vector<std::vector<int>>& grid, std::vector<sf::Vector2i>& cells_
 
 
     }
+
+    cells_to_kill.clear();
 }
 
 void revive(std::vector<std::vector<int>>& grid, std::vector<sf::Vector2i>& cells_to_revive) {
@@ -73,8 +77,9 @@ void revive(std::vector<std::vector<int>>& grid, std::vector<sf::Vector2i>& cell
 
 
     }
-}
 
+    cells_to_revive.clear();
+}
 
 
 int main() {
@@ -83,31 +88,35 @@ int main() {
     const int height{pixel_size * 40};
     const int width{pixel_size * 60};
 
-    // window
+   
+
+    // WINDOW
     sf::RenderWindow window(sf::VideoMode({width, height}), "Game of Life");
 
-    // separator line
+    // SEPARATOR LINE
     sf::Vector2f size{width, 2};
     sf::RectangleShape border;
     border.setSize(size);
     border.setPosition(0, 35 * pixel_size);
     border.setFillColor(sf::Color::Black);
 
-    // TODO next we want to create a 2d vector tracking the progress
-    
 
-    // TODO draw the grid, probably wont use for the final version
-    std::vector<std::vector<int>> grid(height / pixel_size, std::vector<int>(width/ pixel_size));
+    // GRID
+    std::vector<std::vector<int>> grid(35, std::vector<int>(60, 0));
+    int number_of_rows = static_cast<int>(grid.size());
+    int number_of_cols = static_cast<int>(grid[0].size());
 
-    // TODO create a pixel
+    // A SINGLE PIXEL
     sf::RectangleShape pixel{sf::Vector2f{pixel_size, pixel_size}};
     pixel.setPosition(-1, -1);
     pixel.setFillColor(sf::Color::Black);
 
+    // keeping track of what to kill and revive
+    std::vector<sf::Vector2i> cells_to_kill{};
+    std::vector<sf::Vector2i> cells_to_revive{};
 
-
-
-  
+    
+    bool playing = false;
 
     while(window.isOpen()) {
 
@@ -117,7 +126,16 @@ int main() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
+
+
+            else if(event.type == sf::Event::KeyPressed && sf::Keyboard::Enter) {
+
+                playing = true;
+                
+
+            }   
         }
+
 
             
         // checking for mouse key event, and updating the grid
@@ -135,48 +153,51 @@ int main() {
 
         }
 
-        // checking for if the enter key is pressed
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-            ;
+      
+        if (playing) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            for(int i = 0; i < number_of_rows; i++) {
+                for(int j = 0; j < number_of_cols; j++) {
+                    rules(grid, i, j, cells_to_kill, cells_to_revive);
+                    
+
+                }
+                
+            }  
+
+            // then we can update
+            kill(grid, cells_to_kill);
+            revive(grid, cells_to_revive);
+
+
 
         }
-        
-        
 
         
-
+    
 
         // drawing the background colour, order does matter
         sf::Color white = sf::Color::White;
         window.clear(white);
-
-
         window.draw(border);
        
-        // drawing all the pixels from the grid onto the screen
-
-        int row_num{0};
-        int col_num{0};
-        for(auto row: grid) {
-            for(auto col: row) {
-                if(col) {
-                    pixel.setPosition(sf::Vector2f{static_cast<float>(col_num * pixel_size), static_cast<float>(row_num * pixel_size)});
+    
+        for(int i = 0; i < number_of_rows; i++) {
+            for(int j = 0; j < number_of_cols; j++) {
+                if(grid[i][j]){
+                    pixel.setPosition(sf::Vector2f{static_cast<float>(j * pixel_size), static_cast<float>(i * pixel_size)});
                     window.draw(pixel);
+
                 }
-                col_num++;
             }
-            col_num = 0;
-            row_num++;
-
         }
-
 
 
         window.display();
 
 
     }
-
 
 
     return 0;
