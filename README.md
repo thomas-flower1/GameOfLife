@@ -7,5 +7,11 @@ There are 3 rules to the game of life:
 2. An alive cell with more than 3 live neighbors will die in the next generation due to overpopulation.
 3. A dead cell with 3 live neighbors will become a live cell due to repopulation.
 
+To play compile using:
+ ```g++ main.cpp -lsfml-graphics -lsfml-window -lsfml-system```
+
+and run using:
+```./a.out```
+
 
 

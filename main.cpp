@@ -17,7 +17,6 @@ void print_matrix(const std::vector<std::vector<int>>& matrix){
 
 void rules(std::vector<std::vector<int>>& grid, int row, int col, std::vector<sf::Vector2i>& cells_to_kill, std::vector<sf::Vector2i>& cells_to_revive) {
 
-
     int number_of_neighbors{0};
     int number_of_rows{static_cast<int>(grid.size())};
     int number_of_cols{static_cast<int>(grid[0].size())};
@@ -223,3 +222,4 @@ int main() {
     return 0;
     
 }
+
