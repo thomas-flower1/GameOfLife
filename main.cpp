@@ -115,27 +115,40 @@ int main() {
     std::vector<sf::Vector2i> cells_to_kill{};
     std::vector<sf::Vector2i> cells_to_revive{};
 
-    
+    // keeping track
+    int number_of_generations{0};
     bool playing = false;
+
+
+    // font
+    sf::Font font;
+    font.loadFromFile("Ubuntu-Regular.ttf");
+                        
+
+    // Create a text
+    sf::Text text("Generation: " + std::to_string(number_of_generations), font);
+    text.setCharacterSize(30);
+    text.setFillColor(sf::Color::Black);
+    sf::Vector2f text_coord{10,575};
+    text.setPosition(text_coord);
+
 
     while(window.isOpen()) {
 
+        // dealing with the events loop
         sf::Event event;
         while(window.pollEvent(event)) {
 
             if (event.type == sf::Event::Closed) {
+
                 window.close();
-            }
 
-
-            else if(event.type == sf::Event::KeyPressed && sf::Keyboard::Enter) {
+            } else if(event.type == sf::Event::KeyPressed && sf::Keyboard::Enter) {
 
                 playing = true;
                 
-
             }   
         }
-
 
             
         // checking for mouse key event, and updating the grid
@@ -155,8 +168,12 @@ int main() {
 
       
         if (playing) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            
+            // updating the text
+            text.setString("Generation: " + std::to_string(number_of_generations));
+            
 
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             for(int i = 0; i < number_of_rows; i++) {
                 for(int j = 0; j < number_of_cols; j++) {
                     rules(grid, i, j, cells_to_kill, cells_to_revive);
@@ -170,17 +187,20 @@ int main() {
             kill(grid, cells_to_kill);
             revive(grid, cells_to_revive);
 
-
+            number_of_generations ++;
 
         }
 
+
         
-    
+
+
 
         // drawing the background colour, order does matter
         sf::Color white = sf::Color::White;
         window.clear(white);
         window.draw(border);
+        window.draw(text);
        
     
         for(int i = 0; i < number_of_rows; i++) {
