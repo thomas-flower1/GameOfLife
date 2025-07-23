@@ -141,6 +141,7 @@ int main() {
             if (event.type == sf::Event::Closed) {
 
                 window.close();
+                return 0;
 
             } else if(event.type == sf::Event::KeyPressed && sf::Keyboard::Enter) {
 
