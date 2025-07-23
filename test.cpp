@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window/Event.hpp>
 
 
 void print_matrix(const std::vector<std::vector<int>>& matrix){
@@ -11,7 +13,7 @@ void print_matrix(const std::vector<std::vector<int>>& matrix){
     }
 }
 
-void underpopulation(std::vector<std::vector<int>>& grid, int row, int col) {
+void underpopulation(std::vector<std::vector<int>>& grid, int row, int col, std::vector<sf::Vector2i>& cells_to_kill) {
     /*
     Checks the 8 square neighbors
 
@@ -21,6 +23,11 @@ void underpopulation(std::vector<std::vector<int>>& grid, int row, int col) {
 
     
     */
+
+    // if the cell is dead just return straight away
+    if(grid[row][col] == 0) {
+        return;
+    }
 
     int number_of_live_neighbors{0};
     int row_size{static_cast<int>(grid[0].size())};
@@ -57,29 +64,39 @@ void underpopulation(std::vector<std::vector<int>>& grid, int row, int col) {
     if(number_of_live_neighbors < 2) {
 
         // need to change this instead, create a class to keep track of all the things I need to kill
+        sf::Vector2i coord{row, col};
+        cells_to_kill.push_back(coord);
 
-        grid[row][col] = 0; // kill the cell
     }
-
-
 }
 
 
 int main() {
 
+    std::vector<sf::Vector2i> cells_to_kill{};
+
     std::vector<std::vector<int>> grid{
         {0, 0, 1},
-        {1, 0, 1},
-        {1, 0, 0}
+        {0, 1, 0},
+        {0, 1, 0}
     };
 
-    int row{0};
-    int col{2};
+    for(int row = 0; row < 3; row++) {
+        for(int col = 0; col < 3; col++) {
+            underpopulation(grid, row, col, cells_to_kill);
+
+        }
+    }
 
 
-    underpopulation(grid, row, col);
+ 
 
-    print_matrix(grid);
+    for(auto value: cells_to_kill) {
+        std::cout << value.x << "\n";
+        std::cout << value.y << "\n";
+    }
+
+
 
 
 
