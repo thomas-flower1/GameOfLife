@@ -8,10 +8,13 @@ There are 3 rules to the game of life:
 3. A dead cell with 3 live neighbors will become a live cell due to repopulation.
 
 To play compile using:
+<br>
  ```g++ main.cpp -lsfml-graphics -lsfml-window -lsfml-system```
 
 and run using:
+<br>
 ```./a.out```
 
 
-
+## Demo
+![Game of Life DEMO GIF](https://github.com/user-attachments/assets/c23dc6ea-19dc-450d-bcac-4b46dddf8188)
