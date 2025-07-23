@@ -1,4 +1,11 @@
 ### Game of Life clone using C++ and SFML
 
-Project aims to improve my abilities and familuliarity in C++
+Simple implementation of Conway's game of life using C++ and SFML.
+
+There are 3 rules to the game of life:
+1. An alive cell with less than 2 live neighbors will die in the next generation due to underpopulation.
+2. An alive cell with more than 3 live neighbors will die in the next generation due to overpopulation.
+3. A dead cell with 3 live neighbors will become a live cell due to repopulation.
+
+
 
