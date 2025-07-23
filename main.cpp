@@ -1,9 +1,8 @@
 #include <iostream>
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 #include <thread>
-#include <mutex>
+
 
 
 void print_matrix(const std::vector<std::vector<int>>& matrix){
@@ -92,18 +91,22 @@ int main() {
     // WINDOW
     sf::RenderWindow window(sf::VideoMode({width, height}), "Game of Life");
 
+    // GRID
+    const int grid_height{35};
+    const int grid_width{60};
+    std::vector<std::vector<int>> grid(35, std::vector<int>(60, 0));
+    int number_of_rows = static_cast<int>(grid.size());
+    int number_of_cols = static_cast<int>(grid[0].size());
+
     // SEPARATOR LINE
     sf::Vector2f size{width, 2};
     sf::RectangleShape border;
     border.setSize(size);
-    border.setPosition(0, 35 * pixel_size);
+    border.setPosition(0, grid_height * pixel_size);
     border.setFillColor(sf::Color::Black);
 
 
-    // GRID
-    std::vector<std::vector<int>> grid(35, std::vector<int>(60, 0));
-    int number_of_rows = static_cast<int>(grid.size());
-    int number_of_cols = static_cast<int>(grid[0].size());
+    
 
     // A SINGLE PIXEL
     sf::RectangleShape pixel{sf::Vector2f{pixel_size, pixel_size}};

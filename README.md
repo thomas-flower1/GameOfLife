@@ -15,6 +15,8 @@ and run using:
 <br>
 ```./a.out```
 
+Once compiled just press draw using the mouse and press enter to start.
+
 
 ## Demo
 ![Game of Life DEMO GIF](https://github.com/user-attachments/assets/c23dc6ea-19dc-450d-bcac-4b46dddf8188)
